@@ -313,7 +313,10 @@ class _SingleImageEditorState extends State<SingleImageEditor> {
     super.initState();
   }
 
-  double flipValue = 0;
+  // double flipValue = 0;
+  double flipValueVertical = 0;
+  double flipValueHorizontal = 0;
+
   int rotateValue = 0;
 
   double x = 0;
@@ -391,6 +394,25 @@ class _SingleImageEditorState extends State<SingleImageEditor> {
                 if (details.horizontalScale != 1) {
                   scaleFactor = lastScaleFactor *
                       math.min(details.horizontalScale, details.verticalScale);
+
+                  setState(() {});
+                }
+
+                // check for vertical flip
+                // if (details.verticalScale < 0) {
+                //   flipValue = flipValue == 0 ? math.pi : 0;
+                //   setState(() {});
+                // }
+                // check for vertical flip
+                if (details.verticalScale < 0) {
+                  flipValueVertical = flipValueVertical == 0 ? math.pi : 0;
+                  setState(() {});
+                }
+
+                // check for horizontal flip
+                if (details.horizontalScale < 0) {
+                  // Update the flipValue for horizontal flip
+                  flipValueHorizontal = flipValueHorizontal == 0 ? math.pi : 0;
                   setState(() {});
                 }
               }
@@ -424,7 +446,9 @@ class _SingleImageEditorState extends State<SingleImageEditor> {
                         y,
                         0,
                         1 / scaleFactor,
-                      )..rotateY(flipValue),
+                      )
+                        ..rotateY(flipValueHorizontal)
+                        ..rotateX(flipValueVertical),
                       alignment: FractionalOffset.center,
                       child: LayersViewer(
                         layers: layers,
@@ -567,7 +591,7 @@ class _SingleImageEditorState extends State<SingleImageEditor> {
 
                         if (croppedImage == null) return;
 
-                        flipValue = 0;
+                        // flipValue = 0;
                         rotateValue = 0;
 
                         await currentImage.load(croppedImage);
@@ -577,10 +601,26 @@ class _SingleImageEditorState extends State<SingleImageEditor> {
                   if (widget.flipOption != null)
                     BottomButton(
                       icon: Icons.flip,
-                      text: i18n('Flip'),
+                      text: i18n('H Flip'),
                       onTap: () {
                         setState(() {
-                          flipValue = flipValue == 0 ? math.pi : 0;
+                          // flipValue = flipValue == 0 ? math.pi : 0;
+                          // print('flip value : $flipValue');
+                          flipValueHorizontal =
+                              flipValueHorizontal == 0 ? math.pi : 0;
+                        });
+                      },
+                    ),
+                  if (widget.flipOption != null)
+                    BottomButton(
+                      icon: Icons.flip,
+                      text: i18n('V Flip'),
+                      onTap: () {
+                        setState(() {
+                          // flipValue = flipValue == 0 ? math.pi : 0;
+                          // print('flip value : $flipValue');
+                          flipValueVertical =
+                              flipValueVertical == 0 ? math.pi : 0;
                         });
                       },
                     ),
@@ -688,7 +728,6 @@ class ImageCropper extends StatefulWidget {
       o.AspectRatio(title: '7:5', ratio: 7 / 5),
       o.AspectRatio(title: '16:9', ratio: 16 / 9),
       o.AspectRatio(title: '9:16', ratio: 9 / 16),
-
     ],
   });
 
